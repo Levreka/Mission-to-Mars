@@ -22,109 +22,67 @@ browser = Browser('chrome', **executable_path, headless=False)
 
 # In[3]:
 
+#insert news title and paragraph scrapping into a function from here our code
+#will vary a little from our original jupyter notebook
+def mars_news(browser):
 
-# Visit the mars nasa news site
-url = 'https://redplanetscience.com'
-browser.visit(url)
-# Optional delay for loading the page
-browser.is_element_present_by_css('div.list_text', wait_time=1)
+    # Scrape Mars News
+    # Visit the mars nasa news site
+    url = 'https://redplanetscience.com/'
+    browser.visit(url)
 
+    # Optional delay for loading the page
+    browser.is_element_present_by_css('div.list_text', wait_time=1)
 
-# ##review this comments for explanation on above code
-# 
-# With the following line, browser.is_element_present_by_css('div.list_text', wait_time=1), we are accomplishing two things.
-# 
-# One is that we're searching for elements with a specific combination of tag (div) and attribute (list_text). As an example, ul.item_list would be found in HTML as <ul class="item_list">.
-# 
-# Secondly, we're also telling our browser to wait one second before searching for components. The optional delay is useful because sometimes dynamic pages take a little while to load, especially if they are image-heavy.
+    # Convert the browser html to a soup object and then quit the browser
+    html = browser.html
+    news_soup = soup(html, 'html.parser')
 
-# In[4]:
+    # Add try/except for error handling
+    try:
+        slide_elem = news_soup.select_one('div.list_text')
+        # Use the parent element to find the first 'a' tag and save it as 'news_title'
+        news_title = slide_elem.find('div', class_='content_title').get_text()
+        # Use the parent element to find the paragraph text
+        news_p = slide_elem.find('div', class_='article_teaser_body').get_text()
 
+    except AttributeError:
+        return None, None
 
-#set up html parser 
-html = browser.html
-news_soup = soup(html, 'html.parser')
-#create a variable that will hold everything located in the div element
-slide_elem = news_soup.select_one('div.list_text')
-
-
-# In[5]:
-
-
-#call the slide_elem variable to further fileter through the data using .find the most recent
-#title the first parameter is div the class if not sure use inspect on web page to 
-#view 
-slide_elem.find("div", class_='content_title')
-
-
-# In[6]:
-
-
-# Use the parent element to find the first `a` tag and save it as `news_title`
-news_title = slide_elem.find('div', class_='content_title').get_text()
-news_title
-
-
-# In[7]:
-
-
-# Use the parent element to find the paragraph text if your not sure the class name
-#use inspect on the element withing the div and look for the class name
-news_p = slide_elem.find('div', class_="article_teaser_body").get_text()
-news_p
-
+    return news_title, news_p
 
 # ### Featured Images
 
 # In[8]:
 
+#insert feature image scrapping into a function from here our code
+#will vary a little from our original jupyter notebook
+def featured_image(browser):
+def featured_image(browser):
+    # Visit URL
+    url = 'https://spaceimages-mars.com'
+    browser.visit(url)
 
-# Visit URL
-url = 'https://spaceimages-mars.com'
-browser.visit(url)
+    # Find and click the full image button
+    full_image_elem = browser.find_by_tag('button')[1]
+    full_image_elem.click()
 
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = soup(html, 'html.parser')
 
-# In[9]:
+    # Add try/except for error handling
+    try:
+        # Find the relative image url
+        img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
 
+    except AttributeError:
+        return None
 
-# Find and click the full image button the indexation lets the code know
-#which button element we want to click or extract if there is more than one
-full_image_elem = browser.find_by_tag('button')[1]
-full_image_elem.click()
+    # Use the base url to create an absolute url
+    img_url = f'https://spaceimages-mars.com/{img_url_rel}'
 
-
-# In[10]:
-
-
-# Parse the resulting html with soup
-html = browser.html
-img_soup = soup(html, 'html.parser')
-
-
-# In[11]:
-
-
-# Find the relative image url
-img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
-img_url_rel
-
-
-# We've done a lot with that single line.
-# 
-# Let's break it down:
-# 
-# An img tag is nested within this HTML, so we've included it.
-# .get('src') pulls the link to the image.
-# 
-# this is alaso important since if we were just to pull the image link with out this code everytime the web page would be updated we would manually have to update the source(src) link to it this automatizes it 
-# 
-
-# In[12]:
-
-
-# Use the base URL to create an absolute URL
-img_url = f'https://spaceimages-mars.com/{img_url_rel}'
-img_url
+    return img_url
 
 
 # In[14]:
