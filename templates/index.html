@@ -27,7 +27,7 @@
           <div class="media">
             <div class="media-body">
               <h2><mark>Latest Mars News</mark></h2>
-              <h4 class="media-heading">{{ mars.news_title }}</h4>
+              <h4 class="media-heading">{{mars.news_title}}</h4>
               <p>{{ mars.news_paragraph }}</p>
             </div>
           </div>
@@ -35,7 +35,9 @@
       </div>
 
       <!-- Section for Featured Image and Facts table -->
+      <!-- First level -->
       <div class="row" id="mars-featured-image">
+         <!-- Second level -->
         <div class="col-md-8">
           <h2><mark>Featured Mars Image</mark></h2>
 
@@ -51,7 +53,7 @@
           <!-- Mars Facts -->
           <div class="row" id="mars-facts">
             <h4>Mars Facts</h4>
-            <table class="table table-hover">{{ mars.facts | safe }}</table>
+            {{ mars.facts | safe }}
           </div>
         </div>
       </div>
