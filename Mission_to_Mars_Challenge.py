@@ -1,367 +1,601 @@
-
-
-# # Mission to Mars (Module Code)
-
-# In[ ]:
-
-
-# In[2]:
-
-
-# Import Splinter and BeautifulSoup
-import pandas as pd
-from splinter import Browser
-from bs4 import BeautifulSoup as soup
-from webdriver_manager.chrome import ChromeDriverManager
-
-
-# In[3]:
-
-
-# Set the executable path and initialize the chrome browser in splinter
-executable_path = {'executable_path': ChromeDriverManager().install()}
-browser = Browser('chrome', **executable_path, headless=False)
-
-
-# In[4]:
-
-
-# Visit the mars nasa news site
-url = 'https://mars.nasa.gov/news/'
-browser.visit(url)
-# Optional delay for loading the page
-browser.is_element_present_by_css("ul.item_list li.slide", wait_time=1)
-
-
-# In[5]:
-
-
-html = browser.html
-news_soup = soup(html, 'html.parser')
-slide_elem = news_soup.select_one('ul.item_list li.slide')
-
-
-# In[6]:
-
-
-slide_elem.find("div", class_='content_title')
-
-
-# In[7]:
-
-
-# Use the parent element to find the first `a` tag and save it as `news_title`
-news_title = slide_elem.find("div", class_='content_title').get_text()
-news_title
-
-
-# In[8]:
-
-
-# Use the parent element to find the paragraph text
-news_p = slide_elem.find('div', class_="article_teaser_body").get_text()
-news_p
-
-
-# ### Featured Images
-
-# In[9]:
-
-
-# Visit URL
-url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
-browser.visit(url)
-
-
-# In[10]:
-
-
-# Find and click the full image button
-full_image_elem = browser.find_by_id('full_image')
-full_image_elem.click()
-
-
-# In[11]:
-
-
-# Find the more info button and click that
-browser.is_element_present_by_text('more info', wait_time=1)
-more_info_elem = browser.links.find_by_partial_text('more info')
-more_info_elem.click()
-
-
-# In[12]:
-
-
-# Parse the resulting html with soup
-html = browser.html
-img_soup = soup(html, 'html.parser')
-
-
-# In[13]:
-
-
-# Find the relative image url
-img_url_rel = img_soup.select_one('figure.lede a img').get("src")
-img_url_rel
-
-
-# In[19]:
-
-
-# Use the base URL to create an absolute URL
-img_url = f'https://www.jpl.nasa.gov{img_url_rel}'
-img_url
-
-
-# In[20]:
-
-
-import pandas as pd
-
-
-# In[21]:
-
-
-df = pd.read_html('http://space-facts.com/mars/')[0]
-df.columns=['description', 'value']
-df.set_index('description', inplace=True)
-df
-
-
-# In[17]:
-
-
-df.to_html()
-
-
-# In[18]:
-
-
-browser.quit()
-
-
-# # Here start the Mission to Mars Challenge Starter Code
-
-
-# In[ ]:
-
-
-# Import Splinter, BeautifulSoup, and Pandas
-from splinter import Browser
-from bs4 import BeautifulSoup as soup
-import pandas as pd
-
-
-# In[ ]:
-
-
-# Path to chromedriver
-get_ipython().system('which chromedriver')
-
-
-# In[37]:
-
-
-# Set the executable path and initialize the chrome browser in splinter
-executable_path = {'executable_path': './chromedriver'}
-browser = Browser('chrome', **executable_path)
-
-
-# ### Visit the NASA Mars News Site
-
-# In[38]:
-
-
-# Visit the mars nasa news site
-url = 'https://mars.nasa.gov/news/'
-browser.visit(url)
-
-# Optional delay for loading the page
-browser.is_element_present_by_css("ul.item_list li.slide", wait_time=1)
-
-
-# In[39]:
-
-
-# Convert the browser html to a soup object and then quit the browser
-html = browser.html
-news_soup = soup(html, 'html.parser')
-
-slide_elem = news_soup.select_one('ul.item_list li.slide')
-
-
-# In[40]:
-
-
-slide_elem.find("div", class_='content_title')
-
-
-# In[41]:
-
-
-# Use the parent element to find the first a tag and save it as `news_title`
-news_title = slide_elem.find("div", class_='content_title').get_text()
-news_title
-
-
-# In[42]:
-
-
-# Use the parent element to find the paragraph text
-news_p = slide_elem.find('div', class_="article_teaser_body").get_text()
-news_p
-
-
-# ### JPL Space Images Featured Image
-
-# In[43]:
-
-
-# Visit URL
-url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
-browser.visit(url)
-
-
-# In[44]:
-
-
-# Find and click the full image button
-full_image_elem = browser.find_by_id('full_image')
-full_image_elem.click()
-
-
-# In[45]:
-
-
-# Find the more info button and click that
-browser.is_element_present_by_text('more info', wait_time=1)
-more_info_elem = browser.links.find_by_partial_text('more info')
-more_info_elem.click()
-
-
-# In[46]:
-
-
-# Parse the resulting html with soup
-html = browser.html
-img_soup = soup(html, 'html.parser')
-
-
-# In[47]:
-
-
-# find the relative image url
-img_url_rel = img_soup.select_one('figure.lede a img').get("src")
-img_url_rel
-
-
-# In[48]:
-
-
-# Use the base url to create an absolute url
-img_url = f'https://www.jpl.nasa.gov{img_url_rel}'
-img_url
-
-
-# ### Mars Facts
-
-# In[49]:
-
-
-df = pd.read_html('http://space-facts.com/mars/')[0]
-
-df.head()
-
-
-# In[50]:
-
-
-df.columns=['Description', 'Mars']
-df.set_index('Description', inplace=True)
-df
-
-
-# In[51]:
-
-
-df.to_html()
-
-
-# ### Mars Weather
-
-# In[52]:
-
-
-# Visit the weather website
-url = 'https://mars.nasa.gov/insight/weather/'
-browser.visit(url)
-
-
-# In[53]:
-
-
-# Parse the data
-html = browser.html
-weather_soup = soup(html, 'html.parser')
-
-
-# In[54]:
-
-
-# Scrape the Daily Weather Report table
-weather_table = weather_soup.find('table', class_='mb_table')
-print(weather_table.prettify())
-
-
-# # D1: Scrape High-Resolution Mars’ Hemisphere Images and Titles
-
-# ### Hemispheres
-
-# In[55]:
-
-
-# 1. Use browser to visit the URL 
-url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
-browser.visit(url)
-
-
-# In[56]:
-
-
-# 2. Create a list to hold the images and titles.
-hemisphere_image_urls = []
-
-# 3. Write code to retrieve the image urls and titles for each hemisphere.
-for i in range(4):
-    #create empty dictionary
-    hemispheres = {}
-    browser.find_by_css('a.product-item h3')[i].click()
-    element = browser.find_link_by_text('Sample').first
-    img_url = element['href']
-    title = browser.find_by_css("h2.title").text
-    hemispheres["img_url"] = img_url
-    hemispheres["title"] = title
-    hemisphere_image_urls.append(hemispheres)
-    browser.back()
-
-
-# In[34]:
-
-
-# 4. Print the list that holds the dictionary of each image url and title.
-hemisphere_image_urls
-
-
-# In[35]:
-
-
-# 5. Quit the browser
-browser.quit()
-
-
-# In[ ]:
-
-
-
-
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Import Splinter, BeautifulSoup, and Pandas\n",
+    "from splinter import Browser\n",
+    "from bs4 import BeautifulSoup as soup\n",
+    "import pandas as pd\n",
+    "from webdriver_manager.chrome import ChromeDriverManager"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Set the executable path and initialize Splinter\n",
+    "executable_path = {'executable_path': ChromeDriverManager().install()}\n",
+    "browser = Browser('chrome', **executable_path, headless=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Visit the NASA Mars News Site"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Visit the mars nasa news site\n",
+    "url = 'https://mars.nasa.gov/news/'\n",
+    "browser.visit(url)\n",
+    "\n",
+    "# Optional delay for loading the page\n",
+    "browser.is_element_present_by_css(\"ul.item_list li.slide\", wait_time=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Convert the browser html to a soup object and then quit the browser\n",
+    "html = browser.html\n",
+    "news_soup = soup(html, 'html.parser')\n",
+    "\n",
+    "slide_elem = news_soup.select_one('ul.item_list li.slide')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<div class=\"content_title\"><a href=\"/news/9326/nasa-explores-a-winter-wonderland-on-mars/\" target=\"_self\">NASA Explores a Winter Wonderland on Mars</a></div>"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "slide_elem.find(\"div\", class_='content_title')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'NASA Explores a Winter Wonderland on Mars'"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Use the parent element to find the first a tag and save it as `news_title`\n",
+    "news_title = slide_elem.find(\"div\", class_='content_title').get_text()\n",
+    "news_title"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Cube-shaped snow, icy landscapes, and frost are all part of the Red Planet’s coldest season.'"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Use the parent element to find the paragraph text\n",
+    "news_p = slide_elem.find('div', class_=\"article_teaser_body\").get_text()\n",
+    "news_p"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### JPL Space Images Featured Image"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Visit URL\n",
+    "url = 'https://spaceimages-mars.com'\n",
+    "browser.visit(url)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Find and click the full image button\n",
+    "full_image_elem = browser.find_by_tag('button')[1]\n",
+    "full_image_elem.click()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Parse the resulting html with soup\n",
+    "html = browser.html\n",
+    "img_soup = soup(html, 'html.parser')\n",
+    "#this is optional to see results\n",
+    "#img_soup "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'image/featured/mars2.jpg'"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# find the relative image url\n",
+    "img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')\n",
+    "img_url_rel"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'https://spaceimages-mars.com/image/featured/mars2.jpg'"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Use the base url to create an absolute url\n",
+    "img_url = f'https://spaceimages-mars.com/{img_url_rel}'\n",
+    "img_url"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Mars Facts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>0</th>\n",
+       "      <th>1</th>\n",
+       "      <th>2</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Mars - Earth Comparison</td>\n",
+       "      <td>Mars</td>\n",
+       "      <td>Earth</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Diameter:</td>\n",
+       "      <td>6,779 km</td>\n",
+       "      <td>12,742 km</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Mass:</td>\n",
+       "      <td>6.39 × 10^23 kg</td>\n",
+       "      <td>5.97 × 10^24 kg</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Moons:</td>\n",
+       "      <td>2</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Distance from Sun:</td>\n",
+       "      <td>227,943,824 km</td>\n",
+       "      <td>149,598,262 km</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                         0                1                2\n",
+       "0  Mars - Earth Comparison             Mars            Earth\n",
+       "1                Diameter:         6,779 km        12,742 km\n",
+       "2                    Mass:  6.39 × 10^23 kg  5.97 × 10^24 kg\n",
+       "3                   Moons:                2                1\n",
+       "4       Distance from Sun:   227,943,824 km   149,598,262 km"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#retrieving the the galaxy mars table using pandas from the html code and converting \n",
+    "#to a pandas data frame \n",
+    "df = pd.read_html('https://galaxyfacts-mars.com')[0]\n",
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Mars</th>\n",
+       "      <th>Earth</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Description</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Mars - Earth Comparison</th>\n",
+       "      <td>Mars</td>\n",
+       "      <td>Earth</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Diameter:</th>\n",
+       "      <td>6,779 km</td>\n",
+       "      <td>12,742 km</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Mass:</th>\n",
+       "      <td>6.39 × 10^23 kg</td>\n",
+       "      <td>5.97 × 10^24 kg</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Moons:</th>\n",
+       "      <td>2</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Distance from Sun:</th>\n",
+       "      <td>227,943,824 km</td>\n",
+       "      <td>149,598,262 km</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Length of Year:</th>\n",
+       "      <td>687 Earth days</td>\n",
+       "      <td>365.24 days</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Temperature:</th>\n",
+       "      <td>-87 to -5 °C</td>\n",
+       "      <td>-88 to 58°C</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                    Mars            Earth\n",
+       "Description                                              \n",
+       "Mars - Earth Comparison             Mars            Earth\n",
+       "Diameter:                       6,779 km        12,742 km\n",
+       "Mass:                    6.39 × 10^23 kg  5.97 × 10^24 kg\n",
+       "Moons:                                 2                1\n",
+       "Distance from Sun:        227,943,824 km   149,598,262 km\n",
+       "Length of Year:           687 Earth days      365.24 days\n",
+       "Temperature:                -87 to -5 °C      -88 to 58°C"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#changing the data frame columns names setting index to description column\n",
+    "df.columns=['Description', 'Mars', 'Earth']\n",
+    "df.set_index('Description', inplace=True)\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'<table border=\"1\" class=\"dataframe\">\\n  <thead>\\n    <tr style=\"text-align: right;\">\\n      <th></th>\\n      <th>Mars</th>\\n      <th>Earth</th>\\n    </tr>\\n    <tr>\\n      <th>Description</th>\\n      <th></th>\\n      <th></th>\\n    </tr>\\n  </thead>\\n  <tbody>\\n    <tr>\\n      <th>Mars - Earth Comparison</th>\\n      <td>Mars</td>\\n      <td>Earth</td>\\n    </tr>\\n    <tr>\\n      <th>Diameter:</th>\\n      <td>6,779 km</td>\\n      <td>12,742 km</td>\\n    </tr>\\n    <tr>\\n      <th>Mass:</th>\\n      <td>6.39 × 10^23 kg</td>\\n      <td>5.97 × 10^24 kg</td>\\n    </tr>\\n    <tr>\\n      <th>Moons:</th>\\n      <td>2</td>\\n      <td>1</td>\\n    </tr>\\n    <tr>\\n      <th>Distance from Sun:</th>\\n      <td>227,943,824 km</td>\\n      <td>149,598,262 km</td>\\n    </tr>\\n    <tr>\\n      <th>Length of Year:</th>\\n      <td>687 Earth days</td>\\n      <td>365.24 days</td>\\n    </tr>\\n    <tr>\\n      <th>Temperature:</th>\\n      <td>-87 to -5 °C</td>\\n      <td>-88 to 58°C</td>\\n    </tr>\\n  </tbody>\\n</table>'"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#using pandas build function .to_html() to convert the column into html code or json\n",
+    "df.to_html()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# D1: Scrape High-Resolution Mars’ Hemisphere Images and Titles"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Hemispheres"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# 1. Use browser to visit the URL \n",
+    "url = 'https://marshemispheres.com/'\n",
+    "\n",
+    "browser.visit(url)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# 2. Create a list to hold the images and titles. version 1 harder to understand \n",
+    "#but it makes the browser go back to original \n",
+    "hemisphere_image_urls = []\n",
+    "\n",
+    "# 3. Write code to retrieve the image urls and titles for each hemisphere.\n",
+    "for i in range(4):\n",
+    "    hemispheres = {}\n",
+    "    browser.find_by_css('a.product-item h3')[i].click()\n",
+    "    element = browser.links.find_by_text('Sample').first\n",
+    "    img_url = element['href']\n",
+    "    title = browser.find_by_css(\"h2.title\").text\n",
+    "    hemispheres[\"img_url\"] = img_url\n",
+    "    hemispheres[\"title\"] = title\n",
+    "    hemisphere_image_urls.append(hemispheres)\n",
+    "    browser.back()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# # Parse the HTML with soup version 2 \n",
+    "# html = browser.html\n",
+    "# img_soup = soup(html, 'html.parser')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# # 2. Create a list to hold the images and titles. version 2 less complicated \n",
+    "# hemisphere_image_urls = []\n",
+    "\n",
+    "# # 3. Write code to retrieve the image urls and titles for each hemisphere.\n",
+    "\n",
+    "# # Results returned as an iterable list\n",
+    "# results = img_soup.find_all('div', class_='item')\n",
+    "\n",
+    "# # Loop through returned results\n",
+    "# for result in results:\n",
+    "    \n",
+    "#     # Retrieve the titles\n",
+    "#     title = result.find('h3').text\n",
+    "    \n",
+    "#     # Get the link to go the full image site\n",
+    "#     img_url = result.find('a')['href']\n",
+    "    \n",
+    "#     # Creating the full_img_url\n",
+    "#     full_img_url = url + img_url\n",
+    "    \n",
+    "#     # Use browser to go to the full image url and set up the HTML parser\n",
+    "#     browser.visit(full_img_url)\n",
+    "#     html = browser.html\n",
+    "#     img_soup = soup(html, 'html.parser')\n",
+    "    \n",
+    "#     # Retrieve the full image urls\n",
+    "#     hemisphere_img = img_soup.find('div',class_='downloads')\n",
+    "#     hemisphere_full_img = hemisphere_img.find('a')['href']\n",
+    "    \n",
+    "#     # Printing hemisphere_full_img\n",
+    "#     print(hemisphere_full_img)\n",
+    "    \n",
+    "#     # Creating hemispheres dict\n",
+    "#     hemispheres = dict({'img_url':hemisphere_full_img, 'title':title})\n",
+    "  \n",
+    "#     #Append the hemisphere_image_urls list\n",
+    "#     hemisphere_image_urls.append(hemispheres)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[{'img_url': 'https://marshemispheres.com/images/full.jpg',\n",
+       "  'title': 'Cerberus Hemisphere Enhanced'},\n",
+       " {'img_url': 'https://marshemispheres.com/images/schiaparelli_enhanced-full.jpg',\n",
+       "  'title': 'Schiaparelli Hemisphere Enhanced'},\n",
+       " {'img_url': 'https://marshemispheres.com/images/syrtis_major_enhanced-full.jpg',\n",
+       "  'title': 'Syrtis Major Hemisphere Enhanced'},\n",
+       " {'img_url': 'https://marshemispheres.com/images/valles_marineris_enhanced-full.jpg',\n",
+       "  'title': 'Valles Marineris Hemisphere Enhanced'}]"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 4. Print the list that holds the dictionary of each image url and title.\n",
+    "hemisphere_image_urls"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# 5. Quit the browser\n",
+    "browser.quit()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "PythonData",
+   "language": "python",
+   "name": "pythondata"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
