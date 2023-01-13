@@ -49,11 +49,11 @@
    ],
    "source": [
     "# Visit the mars nasa news site\n",
-    "url = 'https://mars.nasa.gov/news/'\n",
+    "url = 'https://redplanetscience.com/'\n",
     "browser.visit(url)\n",
     "\n",
     "# Optional delay for loading the page\n",
-    "browser.is_element_present_by_css(\"ul.item_list li.slide\", wait_time=1)"
+    "browser.is_element_present_by_css('div.list_text', wait_time=1)"
    ]
   },
   {
@@ -66,7 +66,7 @@
     "html = browser.html\n",
     "news_soup = soup(html, 'html.parser')\n",
     "\n",
-    "slide_elem = news_soup.select_one('ul.item_list li.slide')"
+    "slide_elem = news_soup.select_one('div.list_text')"
    ]
   },
   {
@@ -77,7 +77,7 @@
     {
      "data": {
       "text/plain": [
-       "<div class=\"content_title\"><a href=\"/news/9326/nasa-explores-a-winter-wonderland-on-mars/\" target=\"_self\">NASA Explores a Winter Wonderland on Mars</a></div>"
+       "<div class=\"content_title\">The Launch Is Approaching for NASA's Next Mars Rover, Perseverance</div>"
       ]
      },
      "execution_count": 5,
@@ -97,7 +97,7 @@
     {
      "data": {
       "text/plain": [
-       "'NASA Explores a Winter Wonderland on Mars'"
+       "\"The Launch Is Approaching for NASA's Next Mars Rover, Perseverance\""
       ]
      },
      "execution_count": 6,
@@ -119,7 +119,7 @@
     {
      "data": {
       "text/plain": [
-       "'Cube-shaped snow, icy landscapes, and frost are all part of the Red Planet’s coldest season.'"
+       "\"The Red Planet's surface has been visited by eight NASA spacecraft. The ninth will be the first that includes a roundtrip ticket in its flight plan. \""
       ]
      },
      "execution_count": 7,
@@ -183,7 +183,7 @@
     {
      "data": {
       "text/plain": [
-       "'image/featured/mars2.jpg'"
+       "'image/featured/mars3.jpg'"
       ]
      },
      "execution_count": 11,
@@ -205,7 +205,7 @@
     {
      "data": {
       "text/plain": [
-       "'https://spaceimages-mars.com/image/featured/mars2.jpg'"
+       "'https://spaceimages-mars.com/image/featured/mars3.jpg'"
       ]
      },
      "execution_count": 12,
@@ -573,7 +573,7 @@
    "outputs": [],
    "source": [
     "# 5. Quit the browser\n",
-    "browser.quit()"
+    "# browser.quit()"
    ]
   }
  ],
