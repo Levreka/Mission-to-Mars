@@ -77,7 +77,7 @@
     {
      "data": {
       "text/plain": [
-       "<div class=\"content_title\">The Launch Is Approaching for NASA's Next Mars Rover, Perseverance</div>"
+       "<div class=\"content_title\">The Detective Aboard NASA's Perseverance Rover</div>"
       ]
      },
      "execution_count": 5,
@@ -97,7 +97,7 @@
     {
      "data": {
       "text/plain": [
-       "\"The Launch Is Approaching for NASA's Next Mars Rover, Perseverance\""
+       "\"The Detective Aboard NASA's Perseverance Rover\""
       ]
      },
      "execution_count": 6,
@@ -119,7 +119,7 @@
     {
      "data": {
       "text/plain": [
-       "\"The Red Planet's surface has been visited by eight NASA spacecraft. The ninth will be the first that includes a roundtrip ticket in its flight plan. \""
+       "'An instrument called SHERLOC will, with the help of its partner WATSON, hunt for signs of ancient life by detecting organic molecules and minerals.'"
       ]
      },
      "execution_count": 7,
@@ -573,7 +573,7 @@
    "outputs": [],
    "source": [
     "# 5. Quit the browser\n",
-    "# browser.quit()"
+    "browser.quit()"
    ]
   }
  ],
