@@ -3,6 +3,7 @@
 #but we did some minor adjustements like putting almost everything into
 #functions view changes between this file and missiontomars jupyter notebook
 
+# Import Splinter, BeautifulSoup, and Pandas
 from splinter import Browser
 from bs4 import BeautifulSoup as soup
 import pandas as pd
@@ -16,18 +17,16 @@ def scrape_all():
     browser = Browser('chrome', **executable_path, headless=True)
 
     news_title, news_paragraph = mars_news(browser)
+    
 
-      # Since these are pairs 
-    news_title, news_paragraph= mars_news(browser)
-    hemisphere_image_urls=hemisphere(browser)
-    # Run all scraping functions and store results in dictionary 
-    data={
+    # Run all scraping functions and store results in a dictionary
+    data = {
         "news_title": news_title,
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "hemispheres": hemisphere_image_urls,
-        "last_modified": dt.datetime.now()
+        "last_modified": dt.datetime.now(),
+        "hemisphere_data": hemisphere_scrape(browser)
     }
 
     # Stop webdriver and return data
@@ -104,41 +103,36 @@ def mars_facts():
 
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
-
-## > SCRAPE HEMISPHERE <
-
-def hemisphere(browser):
-    url='https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+#create a function that will return the the url string and title of each hemisphere
+def hemisphere_scrape(browser):
+    # 1. Use browser to visit the URL 
+    url = 'https://marshemispheres.com/'
     browser.visit(url)
-
-
+    #optional step 
+    browser.is_element_present_by_css("ul.item_list li.slide", wait_time=1)
+   
+# In[17]:
+# 2. Create a list to hold the images and titles. version 1 harder to understand 
+#but it makes the browser go back to original 
     hemisphere_image_urls = []
 
-    imgs_links= browser.find_by_css("a.product-item h3")
-
-    for x in range(len(imgs_links)):
-        hemisphere={}
-
-        # Find elements going to click link 
-        browser.find_by_css("a.product-item h3")[x].click()
-
-        # Find sample Image link
-        sample_img= browser.find_link_by_text("Sample").first
-        hemisphere['img_url']=sample_img['href']
-
-        # Get hemisphere Title
-        hemisphere['title']=browser.find_by_css("h2.title").text
-
-        #Add Objects to hemisphere_img_urls list
-        hemisphere_image_urls.append(hemisphere)
-
-        # Go Back
+# 3. Write code to retrieve the image urls and titles for each hemisphere.
+    for i in range(4):
+        hemispheres = {}
+        browser.find_by_css('a.product-item h3')[i].click()
+        element = browser.links.find_by_text('Sample').first
+        img_url = element['href']
+        title = browser.find_by_css("h2.title").text
+        hemispheres["img_url"] = img_url
+        hemispheres["title"] = title
+        hemisphere_image_urls.append(hemispheres)
         browser.back()
+        # return the list that holds the dictionary of each image url and title.
     return hemisphere_image_urls
-
-if __name__== "__main__":
-    # If running as script, print scrapped data
-    print(scrape_all())
+    
+#in order to connect the scraped data to your mogodb you must first update 
+#your index html code located under templates folder the mongod dbs is connected to
+#the app and not to the scrapping code
 
 if __name__ == "__main__":
 
