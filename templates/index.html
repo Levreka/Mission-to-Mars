@@ -11,16 +11,16 @@
     />
   </head>
   <body>
-    <div class="container">
+    <div class="container" style="background-color:rgb(0, 0, 0)" style="color:white">
       <!-- Add Jumbotron to Header -->
-      <div class="jumbotron text-center">
-        <h1>Mission to Mars</h1>
+      <div class="jumbotron text-center" style="background-image: url('https://www.worldatlas.com/r/w1024-q80/upload/bb/c3/32/shutterstock-1041249343.jpg'); background-position: center; background-size: cover;height: 250px;">
+        <h1 style="color:white">Mission to Mars</h1>
         <!-- Add a button to activate scraping script -->
-        <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+        <p><a class="btn btn-warning btn-lg" href="/scrape" data-toggle="tooltip" title="Click me!" role="button">Scrape New Data</a></p>
       </div>
       <!-- Add section for Mars News -->
       <div class="row" id="mars-news">
-        <div class="col-md-12">
+        <div class="col-md-12"style="color:white">
           <div class="media">
             <div class="media-body">
               <h2>Latest Mars News</h2>
@@ -32,7 +32,7 @@
       </div>
       <!-- Section for Featured Image and Facts table -->
       <div class="row" id="mars-featured-image">
-        <div class="col-md-8">
+        <div class="col-md-8"style="color:white">
           <h2>Featured Mars Image</h2>
           <img
             src="{{mars.featured_image }}"
@@ -40,7 +40,7 @@
             alt="Responsive image"
           />
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4"style="color:red">
           <!-- Mars Facts -->
           <div class="row" id="mars-facts">
             <h4>Mars Facts</h4>
@@ -49,11 +49,13 @@
         </div>
       </div>
      <!-- Section for Mars Hemispheres -->
-     <div class="row" id="mars-hemispheres">
+     <div class="row" id="mars-hemispheres"style="color:white">
       <div class="page-header">
         <h2 class="text-center">Mars Hemispheres</h2>
       </div>
-
+      <!-- this line of code loops through the mongod dbs mars
+      finds our hemisphere_data the "hemispheres" is the variable in which the 
+      title and our images urls are held in our scraping datacode  -->
       {% for hemispheres in mars.hemisphere_data %}
       <div class="col-md-6">
         <div class="thumbnail">
